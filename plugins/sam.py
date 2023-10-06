@@ -48,24 +48,37 @@ import cloudscraper
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+from base64 import b64encode, b64decode
+from pprint import pprint
+def decrypt(enc):
 
 @bot.on_message(filters.command(["samyak"]) & ~filters.edited)
 async def account(bot: Client, m: Message):
     global cancel
     s = requests.Session()
     cancel = False
-    editable = await m.reply_text("Send **ID & Password** in this manner otherwise bot will not respond.\n\nSend like this:-  **ID*Password**" )
-    rwa_url = "https://samyak.teachx.in/pages/login2"
-    hdr = {"Auth-Key": "appxapi",
-           "User-Id": "-2",
-           "Authorization": "",
-           "User_app_category": "",
-           "Language": "en",
-           "Content-Type": "application/x-www-form-urlencoded",
-           "Content-Length": "233",
-           "Accept-Encoding": "gzip, deflate",
-           "User-Agent": "okhttp/4.9.1"
-          }
+    enc = b64decode(enc)
+        key = '%!$!%_$&!%F)&^!^'.encode('utf-8') ##Must Be 16 char for AES128
+        iv =  '#*y*#2yJ*#$wJv*v'.encode('utf-8') #16 char for AES128
+        cipher = AES.new(key, AES.MODE_CBC,iv)
+        plaintext =  unpad(cipher.decrypt(enc),AES.block_size)
+        b = plaintext.decode('utf-8')
+        return b
+headers = {
+    'Host': 'e-utkarsh.com',
+    'Connection': 'keep-alive',
+    'Accept': 'application/json, text/javascript, */*; q=0.01',
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 12; RMX2121) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.5249.126 Mobile Safari/537.36',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Dest': 'empty',
+    'Referer': 'https://e-utkarsh.com/',
+    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Language': 'en-US,en;q=0.9',
+}
     info = {"email": "", "password": ""}
     #7355971781*73559717
     input1: Message = await bot.listen(editable.chat.id)
